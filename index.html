@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-CN"></html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>0xYriux</title>
+    <script>
+        function generateRandomString() {
+            const randomString = 'xxxxxxxx'.replace(/x/g, function() {
+                return (Math.random() * 16 | 0).toString(16);
+            });
+            document.getElementById('randomString').innerText = randomString;
+        }
+    </script>
+</head>
+<body>
+    <h1>随机字符串生成器</h1>
+    <button onclick="generateRandomString()">生成随机字符串</button>
+    <p id="randomString"></p>
+</body>
+</html>
