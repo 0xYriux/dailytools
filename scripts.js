@@ -7,3 +7,15 @@ function generate16BitUUID() {
     const shortUUID = fullUUID.replace(/-/g, '').substring(0, 16);
     document.getElementById('randomString').innerText = shortUUID;
 }
+
+function formatJSON() {
+    const input = document.getElementById('jsonInput').value;
+    const outputElement = document.getElementById('jsonOutput');
+    try {
+        const json = JSON.parse(input);
+        const formattedJSON = JSON.stringify(json, null, '\t');
+        outputElement.innerText = formattedJSON;
+    } catch (e) {
+        outputElement.innerText = '输入的不是 JSON';
+    }
+}

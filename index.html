@@ -9,8 +9,20 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <h1>生成16位的UUID</h1>
-    <button onclick="generate16BitUUID()">点我</button>
-    <p id="randomString"></p>
+    <div class="tool-container">
+        <div class="tool">
+            <h2>生成16位的UUID</h2>
+            <p>点一下生成一个16位的随机字符串</p>
+            <button onclick="generate16BitUUID()">点我</button>
+            <div class="output" id="randomString"></div>
+        </div>
+        <div class="tool">
+            <h2>JSON 格式化</h2>
+            <p>都懂</p>
+            <textarea id="jsonInput" placeholder="输入一个字符串"></textarea>
+            <button onclick="formatJSON()">格式化</button>
+            <div class="output" id="jsonOutput"></div>
+        </div>
+    </div>
 </body>
 </html>
