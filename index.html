@@ -18,10 +18,21 @@
         </div>
         <div class="tool">
             <h2>JSON 格式化</h2>
-            <p>都懂</p>
             <textarea id="jsonInput" placeholder="输入一个字符串"></textarea>
             <button onclick="formatJSON()">格式化</button>
             <div class="output" id="jsonOutput"></div>
+        </div>
+        <div class="tool">
+            <h2>Base64 编码</h2>
+            <textarea id="base64EncodeInput" placeholder="输入一个字符串"></textarea>
+            <button onclick="encodeBase64()">编码</button>
+            <div class="output" id="base64EncodeOutput"></div>
+        </div>
+        <div class="tool">
+            <h2>Base64 解码</h2>
+            <textarea id="base64DecodeInput" placeholder="输入一个 base64 字符串"></textarea>
+            <button onclick="decodeBase64()">解码</button>
+            <div class="output" id="base64DecodeOutput"></div>
         </div>
     </div>
 </body>

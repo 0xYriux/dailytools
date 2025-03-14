@@ -16,6 +16,24 @@ function formatJSON() {
         const formattedJSON = JSON.stringify(json, null, '\t');
         outputElement.innerText = formattedJSON;
     } catch (e) {
-        outputElement.innerText = '输入的不是 JSON';
+        outputElement.innerText = '格式不对';
+    }
+}
+
+function encodeBase64() {
+    const input = document.getElementById('base64EncodeInput').value;
+    const outputElement = document.getElementById('base64EncodeOutput');
+    const encoded = btoa(unescape(encodeURIComponent(input))); // 支持中文编码
+    outputElement.innerText = encoded;
+}
+
+function decodeBase64() {
+    const input = document.getElementById('base64DecodeInput').value;
+    const outputElement = document.getElementById('base64DecodeOutput');
+    try {
+        const decoded = atob(input);
+        outputElement.innerText = decoded;
+    } catch (e) {
+        outputElement.innerText = '格式不对';
     }
 }

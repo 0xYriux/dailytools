@@ -73,7 +73,8 @@ p {
     background-color: #f9f9f9;
     box-sizing: border-box;
     text-align: left; /* 文字靠左 */
-    white-space: pre; /* 保留空白字符 */
+    white-space: pre-wrap; /* 保留空白字符并自动换行 */
+    word-wrap: break-word; /* 支持自动换行 */
 }
 
 textarea {
