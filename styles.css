@@ -1,19 +1,61 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
     margin: 0;
+    transition: background-color 0.3s, color 0.3s;
 }
+
+header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+#flipClock {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 36px;
+    color: var(--text-color);
+}
+
+#themeToggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    color: var(--text-color);
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+#themeToggle:hover {
+    color: var(--button-hover-background-color);
+}
+
 h1 {
-    color: #333;
+    margin: 0;
+    font-size: 24px;
 }
+
 button {
-    background-color: #4CAF50;
-    color: white;
+    background-color: var(--button-background-color);
+    color: var(--button-text-color);
     border: none;
     padding: 10px 20px;
     text-align: center;
@@ -23,13 +65,15 @@ button {
     margin: 10px 0;
     cursor: pointer;
     border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
 }
+
 button:hover {
-    background-color: #45a049;
+    background-color: var(--button-hover-background-color);
 }
+
 p {
     font-size: 16px;
-    color: #555;
     margin: 10px 0;
 }
 
@@ -38,15 +82,18 @@ p {
     gap: 20px;
     flex-wrap: wrap;
     justify-content: center;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .tool {
-    background-color: white;
-    border: 1px solid #ccc;
+    background-color: var(--tool-background-color);
+    border: 1px solid var(--tool-border-color);
     border-radius: 10px;
     padding: 20px;
-    width: 300px; /* 调整宽度 */
-    height: auto; /* 自动高度 */
+    width: 300px;
+    height: auto;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     display: flex;
@@ -54,6 +101,7 @@ p {
     justify-content: space-between;
     align-items: center;
     box-sizing: border-box;
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
 .tool.disabled {
@@ -63,18 +111,19 @@ p {
 }
 
 .output {
-    border: 1px solid #ccc;
+    border: 1px solid var(--output-border-color);
     border-radius: 5px;
     padding: 10px;
     margin-top: 10px;
-    width: 100%; /* 确保宽度不超出 tool */
-    height: 150px; /* 调整高度 */
+    width: 100%;
+    height: 150px;
     overflow: auto;
-    background-color: #f9f9f9;
+    background-color: var(--output-background-color);
     box-sizing: border-box;
-    text-align: left; /* 文字靠左 */
-    white-space: pre-wrap; /* 保留空白字符并自动换行 */
-    word-wrap: break-word; /* 支持自动换行 */
+    text-align: left;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
 textarea {
@@ -82,10 +131,68 @@ textarea {
     height: 100px;
     padding: 10px;
     margin-top: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--textarea-border-color);
     border-radius: 5px;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
     font-size: 16px;
     resize: none;
+    background-color: var(--textarea-background-color);
+    color: var(--textarea-text-color);
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+/* 主题变量 */
+:root {
+    --background-color: #f0f0f0;
+    --text-color: #333;
+    --button-background-color: #4CAF50;
+    --button-text-color: white;
+    --button-hover-background-color: #45a049;
+    --tool-background-color: white;
+    --tool-border-color: #ccc;
+    --output-background-color: #f9f9f9;
+    --output-border-color: #ccc;
+    --textarea-background-color: white;
+    --textarea-border-color: #ccc;
+    --textarea-text-color: #333;
+}
+
+.dark-theme {
+    --background-color: #333;
+    --text-color: #f0f0f0;
+    --button-background-color: #555;
+    --button-text-color: #f0f0f0;
+    --button-hover-background-color: #666;
+    --tool-background-color: #444;
+    --tool-border-color: #555;
+    --output-background-color: #555;
+    --output-border-color: #666;
+    --textarea-background-color: #444;
+    --textarea-border-color: #555;
+    --textarea-text-color: #f0f0f0;
+}
+
+/* 移动页面适配 */
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .tool {
+        width: calc(100% - 40px); /* 确保工具容器在移动设备上有适当的边距 */
+    }
+
+    .tool-container {
+        padding: 10px; /* 减少移动设备上的内边距 */
+    }
+}
+
+footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-color);
 }

@@ -37,3 +37,49 @@ function decodeBase64() {
         outputElement.innerText = '格式不对';
     }
 }
+
+function toggleTheme() {
+    document.body.classList.toggle('dark-theme');
+    const themeToggle = document.getElementById('themeToggle');
+    if (document.body.classList.contains('dark-theme')) {
+        themeToggle.innerText = '切换到浅色模式';
+    } else {
+        themeToggle.innerText = '切换到深色模式';
+    }
+}
+
+// 初始化主题按钮文本和默认主题
+document.addEventListener('DOMContentLoaded', () => {
+    const themeToggle = document.getElementById('themeToggle');
+    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (prefersDarkScheme) {
+        document.body.classList.add('dark-theme');
+        themeToggle.innerText = '切换到浅色模式';
+    } else {
+        themeToggle.innerText = '切换到深色模式';
+    }
+
+    // 获取用户 IP 和归属地
+    fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => {
+            const userIpInfo = document.getElementById('userIpInfo');
+            userIpInfo.innerText = `当前公网IP：${data.ip} | ${data.country_name}, ${data.region}, ${data.city}`;
+        })
+        .catch(error => {
+            const userIpInfo = document.getElementById('userIpInfo');
+            userIpInfo.innerText = '无法获取您的 IP 和归属地';
+        });
+
+    // 初始化翻页时钟
+    setInterval(updateClock, 1000);
+    updateClock();
+});
+
+function updateClock() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('flipClock').innerText = `${hours}:${minutes}:${seconds}`;
+}

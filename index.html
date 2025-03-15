@@ -9,6 +9,10 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
+    <header>
+        <div id="flipClock" class="flip-clock"></div>
+    </header>
+    <button id="themeToggle" onclick="toggleTheme()">切换到深色模式</button>
     <div class="tool-container">
         <div class="tool">
             <h2>生成16位的UUID</h2>
@@ -17,23 +21,26 @@
             <div class="output" id="randomString"></div>
         </div>
         <div class="tool">
-            <h2>JSON 格式化</h2>
-            <textarea id="jsonInput" placeholder="输入一个字符串"></textarea>
+            <h2>JSON格式化</h2>
+            <textarea id="jsonInput" placeholder="输入一个JSON串"></textarea>
             <button onclick="formatJSON()">格式化</button>
             <div class="output" id="jsonOutput"></div>
         </div>
         <div class="tool">
-            <h2>Base64 编码</h2>
+            <h2>Base64编码</h2>
             <textarea id="base64EncodeInput" placeholder="输入一个字符串"></textarea>
             <button onclick="encodeBase64()">编码</button>
             <div class="output" id="base64EncodeOutput"></div>
         </div>
         <div class="tool">
-            <h2>Base64 解码</h2>
+            <h2>Base64解码</h2>
             <textarea id="base64DecodeInput" placeholder="输入一个 base64 字符串"></textarea>
             <button onclick="decodeBase64()">解码</button>
             <div class="output" id="base64DecodeOutput"></div>
         </div>
     </div>
+    <footer>
+        <p id="userIpInfo">正在获取IP和归属地...</p>
+    </footer>
 </body>
 </html>
