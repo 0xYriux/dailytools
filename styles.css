@@ -144,33 +144,33 @@ textarea {
 
 /* 主题变量 */
 :root {
-    --background-color: #f0f0f0;
-    --text-color: #333;
-    --button-background-color: #4CAF50;
+    --background-color: #e9f5ff; /* 调整为浅蓝色背景 */
+    --text-color: #2c3e50; /* 调整为深蓝色文字 */
+    --button-background-color: #3498db; /* 调整按钮背景为蓝色 */
     --button-text-color: white;
-    --button-hover-background-color: #45a049;
-    --tool-background-color: white;
-    --tool-border-color: #ccc;
-    --output-background-color: #f9f9f9;
-    --output-border-color: #ccc;
-    --textarea-background-color: white;
-    --textarea-border-color: #ccc;
-    --textarea-text-color: #333;
+    --button-hover-background-color: #2980b9; /* 调整按钮悬停背景为深蓝色 */
+    --tool-background-color: #ffffff; /* 工具容器背景为白色 */
+    --tool-border-color: #bdc3c7; /* 工具容器边框为灰色 */
+    --output-background-color: #ecf0f1; /* 输出区域背景为浅灰色 */
+    --output-border-color: #bdc3c7; /* 输出区域边框为灰色 */
+    --textarea-background-color: #ffffff; /* 文本框背景为白色 */
+    --textarea-border-color: #bdc3c7; /* 文本框边框为灰色 */
+    --textarea-text-color: #2c3e50; /* 文本框文字为深蓝色 */
 }
 
 .dark-theme {
-    --background-color: #333;
-    --text-color: #f0f0f0;
-    --button-background-color: #555;
-    --button-text-color: #f0f0f0;
-    --button-hover-background-color: #666;
-    --tool-background-color: #444;
-    --tool-border-color: #555;
-    --output-background-color: #555;
-    --output-border-color: #666;
-    --textarea-background-color: #444;
-    --textarea-border-color: #555;
-    --textarea-text-color: #f0f0f0;
+    --background-color: #1a1a1a; /* 调整为深灰色背景 */
+    --text-color: #ecf0f1; /* 调整为浅灰色文字 */
+    --button-background-color: #34495e; /* 调整按钮背景为深灰色 */
+    --button-text-color: #ecf0f1;
+    --button-hover-background-color: #2c3e50; /* 调整按钮悬停背景为更深的灰色 */
+    --tool-background-color: #222222; /* 工具容器背景为深灰色 */
+    --tool-border-color: #333333; /* 工具容器边框为更深的灰色 */
+    --output-background-color: #2d2d2d; /* 输出区域背景为深灰色 */
+    --output-border-color: #333333; /* 输出区域边框为更深的灰色 */
+    --textarea-background-color: #222222; /* 文本框背景为深灰色 */
+    --textarea-border-color: #333333; /* 文本框边框为更深的灰色 */
+    --textarea-text-color: #ecf0f1; /* 文本框文字为浅灰色 */
 }
 
 /* 移动页面适配 */

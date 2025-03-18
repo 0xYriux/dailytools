@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => {
             const userIpInfo = document.getElementById('userIpInfo');
             userIpInfo.innerText = '无法获取您的 IP 和归属地';
+            console.error('Error:', error);
         });
 
     // 初始化翻页时钟
