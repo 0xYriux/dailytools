@@ -84,3 +84,74 @@ function updateClock() {
     const seconds = String(now.getSeconds()).padStart(2, '0');
     document.getElementById('flipClock').innerText = `${hours}:${minutes}:${seconds}`;
 }
+
+function openIframe() {
+    const iframeContainer = document.getElementById('iframeContainer');
+    const iframe = document.getElementById('iframe');
+    const url = document.getElementById('iframeUrlInput').value;
+    iframe.src = url;
+    iframeContainer.style.display = 'block';
+}
+
+function closeIframe() {
+    const iframeContainer = document.getElementById('iframeContainer');
+    const iframe = document.getElementById('iframe');
+    iframe.src = '';
+    iframeContainer.style.display = 'none';
+}
+
+let xhr; // 全局变量用于控制下载请求
+
+function startDownload() {
+    const url = document.getElementById('downloadUrlInput').value;
+    const downloadStatus = document.getElementById('downloadStatus');
+    const downloadProgress = document.getElementById('downloadProgress');
+
+    xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'blob';
+
+    xhr.onprogress = function(event) {
+        if (event.lengthComputable) {
+            const percent = (event.loaded / event.total) * 100;
+            downloadProgress.value = percent;
+            downloadStatus.innerText = `下载中... ${Math.round(percent)}% (${event.loaded} / ${event.total} bytes)`;
+        }
+    };
+
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            const blob = xhr.response;
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = downloadUrl;
+            a.download = 'downloaded_file';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(downloadUrl);
+            downloadStatus.innerText = '下载完成';
+        } else {
+            downloadStatus.innerText = '下载失败';
+        }
+    };
+
+    xhr.onerror = function() {
+        downloadStatus.innerText = '下载失败';
+    };
+
+    xhr.send();
+}
+
+function pauseDownload() {
+    if (xhr) {
+        xhr.abort();
+        document.getElementById('downloadStatus').innerText = '下载已暂停';
+    }
+}
+
+function clearDownloadCache() {
+    document.getElementById('downloadUrlInput').value = '';
+    document.getElementById('downloadStatus').innerText = '等待下载...';
+    document.getElementById('downloadProgress').value = 0;
+}
