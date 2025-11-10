@@ -14,7 +14,8 @@
         }
         
         body {
-            background: linear-gradient(135deg, #eed1c5 0%, #091c3e 100%);
+            /*background: linear-gradient(135deg, #eed1c5 0%, #091c3e 100%);*/
+            background: #F4F3F6;
             color: #333;
             min-height: 100vh;
             display: flex;
@@ -22,14 +23,17 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
         }
         
         .container {
             width: 100%;
             max-width: 400px;
-            background-color: white;
+            background-color: #F4F3F6;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             overflow: hidden;
             padding: 30px;
             text-align: center;
@@ -40,20 +44,20 @@
         }
         
         .header h1 {
-            color: #2c3e50;
-            font-size: 24px;
+            color: #000000;
+            font-size: 36px;
             margin-bottom: 10px;
         }
         
         .header p {
-            color: #7f8c8d;
+            color: #000000;
             font-size: 16px;
             line-height: 1.5;
         }
         
         .car-icon {
             font-size: 60px;
-            color: #3498db;
+            color: #0071E3;
             margin-bottom: 20px;
         }
         
@@ -84,12 +88,12 @@
         }
         
         .btn-notify {
-            background-color: #3498db;
+            background-color: #0071E3;
             color: white;
         }
         
         .btn-notify:hover {
-            background-color: #2980b9;
+            background-color: #0071E3;
             transform: translateY(-2px);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
@@ -293,7 +297,7 @@
         const cancelContact = document.getElementById('cancelContact');
         const submitContact = document.getElementById('submitContact');
         const closeContactSuccess = document.getElementById('closeContactSuccess');
-        
+
         // 通知我挪车按钮点击事件
         notifyBtn.addEventListener('click', function() {
             // 发送POST请求到指定地址
