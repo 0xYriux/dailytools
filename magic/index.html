@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>奇异博士赛博魔法阵</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.165.0/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675464132/hands.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3/drawing_utils.js"></script>
+
+    <style>
+        /* 1. 基础样式 */
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #0d1117; /* 深蓝黑背景 */
+            color: #00FFFF; /* 赛博青色 */
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+        canvas {
+            display: block;
+        }
+
+        /* 2. 启动界面 (赛博 UI/UX) */
+        #start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 100;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+        #start-screen h1 {
+            font-size: 3em;
+            text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 40px #00FFFF;
+            animation: flicker 1.5s infinite alternate;
+        }
+        #start-screen p {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            color: #00FF00; /* 电子绿 */
+        }
+        #start-button {
+            padding: 15px 30px;
+            font-size: 1.5em;
+            color: #FFA500; /* 橙色高亮 */
+            background: none;
+            border: 2px solid #FFA500;
+            box-shadow: 0 0 15px #FFA500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        #start-button:hover {
+            background-color: #FFA500;
+            color: black;
+            box-shadow: 0 0 30px #FFA500;
+        }
+
+        /* 3. 摄像头视频流 (隐藏在后台，用于 MediaPipe 处理) */
+        #webcam-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 1px;
+            height: 1px;
+            visibility: hidden; /* 隐藏视频流 */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen">
+        <h1>次元 ARCANUM 系统</h1>
+        <p>系统初始化：请授权摄像头权限并进入全屏模式...</p>
+        <button id="start-button">授权 & 启动魔法阵</button>
+    </div>
+
+    <video id="webcam-video" playsinline></video>
+
+    <canvas id="three-canvas"></canvas>
+
+    <script>
+        // --- 全局变量 ---
+        let camera, scene, renderer, magicCircle;
+        let videoElement;
+        let hands;
+        let handLandmarks = [];
+        const canvas = document.getElementById('three-canvas');
+        
+        // 用于平滑过渡的当前缩放和不透明度
+        let targetScale = 0.01; 
+        let currentScale = 0.01;
+        let targetOpacity = 0.0;
+        let currentOpacity = 0.0;
+        const LERP_FACTOR = 0.05; // 线性插值因子
+
+        // --- 1. Three.js 初始化 ---
+        function initThreeJS() {
+            // 场景
+            scene = new THREE.Scene();
+            
+            // 相机
+            const aspect = window.innerWidth / window.innerHeight;
+            // 使用透视相机，模拟人眼效果
+            camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+            camera.position.z = 5;
+
+            // 渲染器
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0); // 透明背景
+
+            // 魔法阵对象
+            magicCircle = createMagicCircle();
+            scene.add(magicCircle);
+            
+            // 初始隐藏
+            magicCircle.visible = false;
+            
+            // 窗口调整大小事件
+            window.addEventListener('resize', onWindowResize, false);
+            
+            animate();
+        }
+        
+        // 窗口大小调整函数
+        function onWindowResize() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        }
+
+        // --- 2. 魔法阵模型创建 (奇异博士风格) ---
+        function createMagicCircle() {
+            const group = new THREE.Group();
+            
+            // 材质：使用 AdditiveBlending 模拟能量发光体
+            const ringMat = new THREE.MeshBasicMaterial({ 
+                color: 0xFFA500, // 核心橙色/金色
+                transparent: true, 
+                opacity: 1.0,
+                blending: THREE.AdditiveBlending 
+            });
+            
+            // 1. 内部圆环 (快速旋转)
+            const ringGeo1 = new THREE.TorusGeometry(1.0, 0.02, 16, 100);
+            const ring1 = new THREE.Mesh(ringGeo1, ringMat.clone());
+            ring1.rotationSpeed = 0.02;
+            group.add(ring1);
+            
+            // 2. 外部圆环 (慢速旋转)
+            const ringGeo2 = new THREE.TorusGeometry(1.5, 0.05, 16, 100);
+            const ring2 = new THREE.Mesh(ringGeo2, ringMat.clone());
+            ring2.rotationSpeed = -0.01;
+            group.add(ring2);
+
+            // 3. 粒子火花 (使用 Points)
+            const particleCount = 1000;
+            const particlesGeo = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            
+            for (let i = 0; i < particleCount; i++) {
+                // 随机分布在一个圆环平面内
+                const radius = Math.random() * 1.5 + 0.5;
+                const angle = Math.random() * Math.PI * 2;
+                positions[i * 3] = Math.cos(angle) * radius;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 0.2; // Y轴略微散开
+                positions[i * 3 + 2] = Math.sin(angle) * radius;
+            }
+            particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            
+            // 粒子材质：使用发光和较大的点
+            const particleMat = new THREE.PointsMaterial({
+                color: 0xFFFF00, // 亮黄色/白色核心
+                size: 0.05,
+                sizeAttenuation: true,
+                blending: THREE.AdditiveBlending,
+            });
+            
+            const particles = new THREE.Points(particlesGeo, particleMat);
+            particles.rotationSpeed = 0.03;
+            group.add(particles);
+
+            return group;
+        }
+
+        // --- 3. 动画循环和手势处理 ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // 魔法阵旋转
+            if (magicCircle.visible) {
+                magicCircle.children.forEach(child => {
+                    child.rotation.z += child.rotationSpeed || 0;
+                });
+            }
+            
+            // 平滑过渡 (线性插值)
+            currentScale += (targetScale - currentScale) * LERP_FACTOR;
+            currentOpacity += (targetOpacity - currentOpacity) * LERP_FACTOR;
+            
+            magicCircle.scale.set(currentScale, currentScale, currentScale);
+            // 更新魔法阵所有组件的不透明度
+            magicCircle.children.forEach(child => {
+                child.material.opacity = currentOpacity;
+            });
+            
+            renderer.render(scene, camera);
+        }
+
+        // --- 4. MediaPipe Hands 初始化和手势检测 ---
+        async function setupMediaPipe() {
+            videoElement = document.getElementById('webcam-video');
+            
+            // 初始化 MediaPipe Hands
+            hands = new Hands({
+                locateFile: (file) => {
+                    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675464132/${file}`;
+                }
+            });
+
+            hands.setOptions({
+                maxNumHands: 2,
+                modelComplexity: 1,
+                minDetectionConfidence: 0.5,
+                minTrackingConfidence: 0.5
+            });
+
+            hands.onResults(onResults);
+
+            // 设置摄像头 (CameraUtils)
+            const cameraUtils = new Camera(videoElement, {
+                onFrame: async () => {
+                    await hands.send({ image: videoElement });
+                },
+                width: 1280,
+                height: 720
+            });
+            cameraUtils.start();
+        }
+
+        // --- 5. 手势结果处理 (核心控制逻辑) ---
+        function onResults(results) {
+            handLandmarks = results.multiHandLandmarks;
+
+            if (handLandmarks && handLandmarks.length === 2) {
+                // 检测到双手：显示魔法阵
+                magicCircle.visible = true;
+                targetOpacity = 1.0; 
+                
+                // 简化：用两手的食指指尖 (landmark 8) 来定位和缩放
+                const p1 = handLandmarks[0][8];
+                const p2 = handLandmarks[1][8];
+
+                // 1. 定位 (将 2D 归一化坐标 [0, 1] 映射到 3D [-aspect, aspect] / [-1, 1])
+                const aspect = window.innerWidth / window.innerHeight;
+                
+                // 转换 2D 坐标到 3D 空间，Z=0 处
+                magicCircle.position.x = (p1.x + p2.x) / 2 * aspect * 2 - aspect;
+                magicCircle.position.y = -(p1.y + p2.y) / 2 * 2 + 1;
+                // 保持一个稳定的深度
+                magicCircle.position.z = 0;
+
+                // 2. 缩放 (通过两指距离)
+                const distanceX = Math.abs(p1.x - p2.x);
+                const distanceY = Math.abs(p1.y - p2.y);
+                const distance = Math.hypot(distanceX, distanceY);
+                
+                // 缩放因子：限制在 0.5 到 2.5 之间
+                targetScale = Math.max(0.5, Math.min(distance * 3, 2.5));
+                
+            } else {
+                // 未检测到双手：隐藏魔法阵
+                targetScale = 0.01; // 缩小到几乎看不见
+                targetOpacity = 0.0; // 完全透明
+                
+                // 当完全透明后才设置不可见，以防 MediaPipe 偶发跳变
+                if (currentOpacity < 0.05) {
+                    magicCircle.visible = false;
+                }
+            }
+        }
+
+        // --- 6. 启动控制 (摄像头授权和全屏) ---
+        document.getElementById('start-button').addEventListener('click', async () => {
+            document.getElementById('start-screen').style.display = 'none';
+
+            try {
+                // 1. 请求摄像头权限
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                videoElement.srcObject = stream;
+                // 确保视频元素加载完成
+                await new Promise((resolve) => {
+                    videoElement.onloadedmetadata = () => {
+                        videoElement.play();
+                        resolve();
+                    };
+                });
+                
+                // 2. 请求全屏
+                await document.documentElement.requestFullscreen();
+
+                // 3. 启动 Three.js 和 MediaPipe
+                initThreeJS();
+                await setupMediaPipe();
+
+            } catch (err) {
+                console.error("启动失败：未授予权限或设备不可用。", err);
+                alert("❗ 错误：请授予摄像头权限，并在支持全屏的环境中运行 (推荐 HTTPS 或 localhost)。");
+                document.getElementById('start-screen').style.display = 'flex'; // 重新显示启动屏幕
+            }
+        });
+        
+    </script>
+
+</body>
+</html>
