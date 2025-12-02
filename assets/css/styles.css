@@ -1,0 +1,190 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    padding: 40px 30px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    z-index: 20; /* 保证主控件在白板之上 */
+}
+
+/* 头像（适用于 img.avatar） */
+.avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 20px;
+    display: block;
+}
+
+.name {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.info-item {
+    margin-bottom: 16px;
+    text-align: left;
+    padding: 12px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.info-label {
+    font-size: 12px;
+    color: #999;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.info-value {
+    font-size: 14px;
+    color: #333;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.textarea-wrapper {
+    margin-top: 24px;
+}
+
+textarea {
+    width: 100%;
+    height: 120px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+textarea:focus {
+    border-color: #636e72;
+}
+
+/* 白板（覆盖整页） */
+#whiteboard {
+    position: fixed;
+    inset: 0;
+    background: #ffffff;
+    background-image:
+        linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px),
+        linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px;
+    z-index: 0;
+    overflow: auto;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.board-hint {
+    position: fixed;
+    left: 12px;
+    bottom: 12px;
+    background: rgba(255,255,255,0.9);
+    color: #333;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    z-index: 30;
+}
+
+/* 白板元素（文本/图片等） */
+.board-item {
+    position: absolute;
+    transform-origin: center center;
+    cursor: move;
+    touch-action: none;
+    user-select: none;
+    transition: box-shadow .08s;
+}
+
+.board-item.selected {
+    box-shadow: 0 8px 28px rgba(0,0,0,0.15);
+    z-index: 40;
+}
+
+.board-item.text {
+    min-width: 80px;
+    min-height: 40px;
+    padding: 8px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 6px;
+    border: 1px dashed rgba(0,0,0,0.08);
+    font-size: 16px;
+    color: #111;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.board-item img {
+    display: block;
+    max-width: 420px;
+    max-height: 320px;
+    border-radius: 6px;
+    height: auto;
+    width: auto;
+}
+
+/* 缩放/旋转把手 */
+.handle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.18);
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    z-index: 60;
+    cursor: pointer;
+}
+
+.handle-scale { right: -10px; bottom: -10px; cursor: nwse-resize; }
+.handle-rotate { right: -10px; top: -10px; cursor: grab; }
+
+/* 文字可编辑时的样式 */
+.board-item.text[contenteditable="true"] {
+    outline: 2px dashed rgba(99,110,114,0.2);
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 30px 20px;
+    }
+
+    .name {
+        font-size: 20px;
+    }
+
+    .avatar {
+        width: 80px;
+        height: 80px;
+    }
+
+    /* 保证白板上的元素缩放时兼容小屏幕 */
+    .board-item img { max-width: 260px; max-height: 200px; }
+}
