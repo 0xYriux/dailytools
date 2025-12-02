@@ -44,6 +44,15 @@ document.addEventListener('DOMContentLoaded', () => {
         notepad.addEventListener('input', () => {
             localStorage.setItem(CACHE_KEY, notepad.value);
         });
+        // 当聚焦/点击输入框时，取消白板上任何已选中的元素，避免退格误删白板元素
+        notepad.addEventListener('focus', () => {
+            if (board) selectElement(null);
+        });
+        notepad.addEventListener('click', (e) => {
+            // 防止事件冒泡到白板或页面其它监听器
+            e.stopPropagation();
+            if (board) selectElement(null);
+        });
     }
 
     /* ---------- 白板功能 (paste -> add element, drag, scale, rotate, persist) ---------- */
@@ -356,8 +365,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // keyboard shortcuts for deletion
+    // keyboard shortcuts for deletion（当焦点在可编辑元素上时不要触发删除白板元素）
     document.addEventListener('keydown', (e) => {
+        // 如果焦点在 input/textarea 或 contentEditable 元素上，放行按键（让编辑行为正常工作）
+        const active = document.activeElement;
+        const isEditing = active && (
+            active.tagName === 'INPUT' ||
+            active.tagName === 'TEXTAREA' ||
+            active.isContentEditable
+        );
+        if (isEditing) return;
+
         if (e.key === 'Delete' || e.key === 'Backspace') {
             const sel = board.querySelector('.board-item.selected');
             if (sel) {
