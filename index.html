@@ -10,22 +10,30 @@
 	<!-- 白板：作为页面背景的可编辑画布，支持粘贴、拖拽、缩放、旋转 -->
 	<div id="whiteboard" tabindex="0" aria-label="白板"></div>
 	<div id="board-hint" class="board-hint">在此页面粘贴文本或图片（Ctrl/Cmd+V）以添加到白板</div>
+	<!-- 右上角主题切换按钮 -->
+	<button id="themeToggle" class="theme-btn" title="切换深色/浅色模式">☀️</button>
 	<div class="container">
-		<img src="favicon.ico" class="avatar" alt="Avatar">
-		<div class="name" id="name">0xYriux</div>
-		
-		<div class="info-item">
-			<div class="info-label">时间</div>
-			<div class="info-value" id="time">--:--:--</div>
+		<div class="left-panel">
+			<img src="favicon.ico" class="avatar" alt="Avatar">
+			<div class="name" id="name">0xYriux</div>
 		</div>
 		
-		<div class="info-item">
-			<div class="info-label">来源IP</div>
-			<div class="info-value" id="ip">获取中...</div>
-		</div>
-		
-		<div class="textarea-wrapper">
-			<textarea id="notepad" placeholder="输入你的备忘录..."></textarea>
+		<div class="right-panel">
+			<div class="info-top">
+				<div class="info-item">
+					<div class="info-label">时间</div>
+					<div class="info-value" id="time">--:--:--</div>
+				</div>
+				
+				<div class="info-item">
+					<div class="info-label">来源IP</div>
+					<div class="info-value" id="ip">获取中...</div>
+				</div>
+			</div>
+			
+			<div class="textarea-wrapper">
+				<textarea id="notepad" placeholder="说些啥吧..."></textarea>
+			</div>
 		</div>
 	</div>
 	
