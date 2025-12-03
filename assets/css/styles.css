@@ -407,23 +407,40 @@ body.dark-mode .board-item.selected {
 }
 
 .board-item.selected .handle-scale {
-	background: #4a9eff;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
 	border: 2px solid #fff;
-	box-shadow: 0 2px 8px rgba(74, 158, 255, 0.4);
+	box-shadow: 0 2px 12px rgba(102, 126, 234, 0.5), 0 0 20px rgba(118, 75, 162, 0.3);
 }
 
 .board-item.selected .handle-scale::before {
 	color: #fff;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .board-item.selected .handle-rotate {
-	background: #ff6b6b;
+	background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #ff6b6b 100%);
 	border: 2px solid #fff;
-	box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+	box-shadow: 0 2px 12px rgba(245, 87, 108, 0.5), 0 0 20px rgba(255, 107, 107, 0.3);
 }
 
 .board-item.selected .handle-rotate::before {
 	color: #fff;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* 把手悬停效果 */
+.board-item.selected .handle-scale:hover {
+	background: linear-gradient(135deg, #764ba2 0%, #667eea 50%, #f093fb 100%);
+	box-shadow: 0 4px 16px rgba(102, 126, 234, 0.6), 0 0 28px rgba(118, 75, 162, 0.4);
+	transform: scale(var(--handle-scale, 1)) scale(1.1);
+	transition: all 0.2s ease;
+}
+
+.board-item.selected .handle-rotate:hover {
+	background: linear-gradient(135deg, #f5576c 0%, #f093fb 50%, #ff6b6b 100%);
+	box-shadow: 0 4px 16px rgba(245, 87, 108, 0.6), 0 0 28px rgba(255, 107, 107, 0.4);
+	transform: scale(var(--handle-scale, 1)) scale(1.1);
+	transition: all 0.2s ease;
 }
 
 /* 深色模式下的把手 */
@@ -433,23 +450,40 @@ body.dark-mode .handle {
 }
 
 body.dark-mode .board-item.selected .handle-scale {
-	background: #6fb3ff;
-	border: 2px solid rgba(200, 220, 255, 0.9);
-	box-shadow: 0 2px 8px rgba(111, 179, 255, 0.6);
+	background: linear-gradient(135deg, #4facfe 0%, #00f2fe 50%, #667eea 100%);
+	border: 2px solid rgba(255, 255, 255, 0.95);
+	box-shadow: 0 2px 12px rgba(79, 172, 254, 0.6), 0 0 24px rgba(0, 242, 254, 0.4);
 }
 
 body.dark-mode .board-item.selected .handle-scale::before {
 	color: #fff;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 body.dark-mode .board-item.selected .handle-rotate {
-	background: #ff8585;
-	border: 2px solid rgba(200, 220, 255, 0.9);
-	box-shadow: 0 2px 8px rgba(255, 133, 133, 0.6);
+	background: linear-gradient(135deg, #fa709a 0%, #fee140 50%, #ff6b6b 100%);
+	border: 2px solid rgba(255, 255, 255, 0.95);
+	box-shadow: 0 2px 12px rgba(250, 112, 154, 0.6), 0 0 24px rgba(255, 107, 107, 0.4);
 }
 
 body.dark-mode .board-item.selected .handle-rotate::before {
 	color: #fff;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* 深色模式下的把手悬停效果 */
+body.dark-mode .board-item.selected .handle-scale:hover {
+	background: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #667eea 100%);
+	box-shadow: 0 4px 16px rgba(79, 172, 254, 0.7), 0 0 32px rgba(0, 242, 254, 0.5);
+	transform: scale(var(--handle-scale, 1)) scale(1.1);
+	transition: all 0.2s ease;
+}
+
+body.dark-mode .board-item.selected .handle-rotate:hover {
+	background: linear-gradient(135deg, #fee140 0%, #fa709a 50%, #ff6b6b 100%);
+	box-shadow: 0 4px 16px rgba(250, 112, 154, 0.7), 0 0 32px rgba(255, 107, 107, 0.5);
+	transform: scale(var(--handle-scale, 1)) scale(1.1);
+	transition: all 0.2s ease;
 }
 
 /* 文字可编辑时的样式 */

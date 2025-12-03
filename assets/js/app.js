@@ -363,25 +363,55 @@ function initApp() {
 			return { x: margin, y: margin };
 		},
 
-		addText(text, x, y) {
+		// 检查位置是否可用（不与容器重叠）
+		isPositionValid(x, y, w = 200, h = 120) {
+			if (x === null || y === null || x === undefined || y === undefined) return false;
+			if (!DOM.container) return true;
+			
+			const containerRect = DOM.container.getBoundingClientRect();
+			const boardRect = DOM.board.getBoundingClientRect();
+			
+			// 将相对于白板的坐标转换为屏幕坐标
+			const screenX = boardRect.left + x;
+			const screenY = boardRect.top + y;
+			
+			const itemRect = {
+				left: screenX,
+				right: screenX + w,
+				top: screenY,
+				bottom: screenY + h
+			};
+			
+			return !Utils.rectsIntersect(itemRect, containerRect);
+		},
+
+		addText(text, x, y, rotation = 0) {
 			if (!DOM.board) return;
-			if (x === undefined || y === undefined) {
-				const pos = this.getSafePosition(240, 80);
+			const defaultW = 240, defaultH = 80;
+			
+			// 如果位置无效或未提供，使用默认位置
+			if (!this.isPositionValid(x, y, defaultW, defaultH)) {
+				const pos = this.getSafePosition(defaultW, defaultH);
 				x = pos.x;
 				y = pos.y;
 			}
-			BoardElement.createFromState({ id: Utils.makeId(), type: 'text', x, y, scale: 1, rotation: 0, content: text || '' });
+			
+			BoardElement.createFromState({ id: Utils.makeId(), type: 'text', x, y, scale: 1, rotation: rotation || 0, content: text || '' });
 			this.save();
 		},
 
-		addImage(dataUrl, x, y) {
+		addImage(dataUrl, x, y, rotation = 0) {
 			if (!DOM.board) return;
-			if (x === undefined || y === undefined) {
-				const pos = this.getSafePosition(320, 240);
+			const defaultW = 320, defaultH = 240;
+			
+			// 如果位置无效或未提供，使用默认位置
+			if (!this.isPositionValid(x, y, defaultW, defaultH)) {
+				const pos = this.getSafePosition(defaultW, defaultH);
 				x = pos.x;
 				y = pos.y;
 			}
-			BoardElement.createFromState({ id: Utils.makeId(), type: 'image', x, y, scale: 1, rotation: 0, content: dataUrl });
+			
+			BoardElement.createFromState({ id: Utils.makeId(), type: 'image', x, y, scale: 1, rotation: rotation || 0, content: dataUrl });
 			this.save();
 		}
 	};
@@ -422,14 +452,33 @@ function initApp() {
 
 	// ===== 粘贴处理 =====
 	const PasteHandler = {
+		lastMouseX: null,
+		lastMouseY: null,
+
 		attach() {
 			document.addEventListener('paste', (ev) => this.handle(ev));
+			// 跟踪鼠标位置，用于粘贴时定位
+			document.addEventListener('mousemove', (e) => {
+				this.lastMouseX = e.clientX;
+				this.lastMouseY = e.clientY;
+			});
 		},
 
 		handle(ev) {
 			if (!DOM.board) return;
 			const data = ev.clipboardData || window.clipboardData;
 			if (!data) return;
+
+			// 获取当前鼠标位置（相对于白板的坐标）
+			let pasteX = null, pasteY = null;
+			if (this.lastMouseX !== null && this.lastMouseY !== null) {
+				const boardRect = DOM.board.getBoundingClientRect();
+				pasteX = this.lastMouseX - boardRect.left;
+				pasteY = this.lastMouseY - boardRect.top;
+			}
+
+			// 生成随机旋转角度（-10 到 10 度）
+			const randomRotation = Math.floor(Math.random() * 21) - 10; // -10 到 10
 
 			let handled = false;
 			const items = data.items || [];
@@ -440,7 +489,7 @@ function initApp() {
 					if (file) {
 						handled = true;
 						const reader = new FileReader();
-						reader.onload = (e) => BoardState.addImage(e.target.result);
+						reader.onload = (e) => BoardState.addImage(e.target.result, pasteX, pasteY, randomRotation);
 						reader.readAsDataURL(file);
 					}
 				}
@@ -448,7 +497,7 @@ function initApp() {
 
 			if (!handled) {
 				const txt = (data.getData && data.getData('text/plain')) || '';
-				if (txt?.trim()) BoardState.addText(txt);
+				if (txt?.trim()) BoardState.addText(txt, pasteX, pasteY, randomRotation);
 			}
 		}
 	};
